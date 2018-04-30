@@ -14,10 +14,11 @@ class Node : public QGraphicsObject
     Q_OBJECT
 public:
     explicit Node(QGraphicsItem *parent = 0);
-    const uint id;
     ~Node();
-    static const Node* selectedNode();
+    const uint id;
+    static Node *selectedNode();
     static void deleteSelectedNode();
+    void setNodeSelected(bool toNotNull = true);
 public slots:
 
 signals:
@@ -26,7 +27,6 @@ private:
     static uint idStatic;
     static Node* _selected;
     static QMap<uint, Node*> _map;
-    void setNodeSelected(Node * n);
 
 
     QRectF boundingRect() const;

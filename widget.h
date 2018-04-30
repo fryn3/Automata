@@ -22,7 +22,8 @@ private:
     QPushButton *btnDeleteNode;
     QGraphicsView *view;
     QGraphicsScene *scene;
-
+    bool _connectNode;
+    Node *_source, *_destination;
 public:
     Widget(QWidget *parent = 0);
     ~Widget();

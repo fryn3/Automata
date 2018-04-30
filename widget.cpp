@@ -6,9 +6,9 @@ static int randomBetween(int low, int high)
 }
 
 Widget::Widget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), _connectNode(false)
 {
-    resize(500, 530);
+    resize(540, 560);
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
 
 
@@ -28,9 +28,10 @@ Widget::Widget(QWidget *parent)
         rightLayout->addLayout(layout);
     }
 
-    view = new QGraphicsView(this);
     scene = new QGraphicsScene(this);
-    view->setScene(scene);
+    scene->setSceneRect(0, 0, 500, 500);
+    view = new QGraphicsView(scene);
+    view->setRenderHints(QPainter::Antialiasing);
     rightLayout->addWidget(view);
     connect(btnCreateNode, SIGNAL(clicked()), SLOT(onBtnCreateNodeClicked()));
     connect(btnConnectNode, SIGNAL(clicked()), SLOT(onBtnConnectNodeClicked()));
@@ -45,6 +46,22 @@ Widget::~Widget()
 
 void Widget::onSceneNodeChanged()
 {
+    if (_connectNode) {
+        // Возможно будет равен nullptr,
+        // это значит направлен в себя
+        _destination = Node::selectedNode();
+        QLineF lineBetweenItems;
+        lineBetweenItems.setP1(_source->scenePos());
+        lineBetweenItems.setP2(_destination->scenePos());
+        // добавляем линию на сцену
+        QGraphicsLineItem * l = scene->addLine(lineBetweenItems);
+        l->setPen(QPen(Qt::black, 3, Qt::SolidLine));
+//        l->setFlags(QGraphicsItem::ItemIsSelectable);
+
+
+        _connectNode = false;
+        Node::selectedNode()->setNodeSelected(false);
+    }
     if (Node::selectedNode() != nullptr) {
         btnConnectNode->setEnabled(true);
         btnDeleteNode->setEnabled(true);
@@ -57,8 +74,8 @@ void Widget::onSceneNodeChanged()
 void Widget::onBtnCreateNodeClicked()
 {
     Node *node = new Node();        // Создаём графический элемент
-    node->setPos(randomBetween(100, 300),    // Устанавливаем случайную позицию элемента
-                 randomBetween(100, 300));
+    node->setPos(randomBetween(150, 350),    // Устанавливаем случайную позицию элемента
+                 randomBetween(150, 350));
     scene->addItem(node);   // Добавляем элемент на графическую сцену
 
     connect(node, SIGNAL(selectNodeChanged()), SLOT(onSceneNodeChanged()));
@@ -67,11 +84,13 @@ void Widget::onBtnCreateNodeClicked()
 
 void Widget::onBtnConnectNodeClicked()
 {
-
+    _source = Node::selectedNode();
+    _connectNode = true;
 }
 
 void Widget::onBtnDeleteNodeClicked()
 {
+    scene->removeItem(Node::selectedNode());
     Node::deleteSelectedNode();
 }
 

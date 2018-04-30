@@ -4,7 +4,7 @@ uint Node::idStatic = 0;
 Node* Node::_selected = nullptr;
 QMap<uint, Node*> Node::_map;
 
-Node::Node(QGraphicsItem *parent) : QGraphicsObject(parent),
+Node::Node(QGraphicsItem *parent): QGraphicsObject(parent),
     id(idStatic++)
 {
     _map[id] = this;
@@ -15,13 +15,17 @@ Node::~Node()
     _map.remove(id);
 }
 
-const Node *Node::selectedNode() { return _selected;}
+Node *Node::selectedNode() { return _selected;}
 
-void Node::setNodeSelected(Node * n)
+void Node::setNodeSelected(bool toNotNull)
 {
-    if (_selected != n) {
-        _selected = n;
+    if (_selected != (toNotNull ? this : nullptr)) {
+        _selected = (toNotNull ? this : nullptr);
         emit selectNodeChanged();
+    }
+    // Перерисовать все вершины!
+    foreach (Node* node, _map) {
+        node->prepareGeometryChange();
     }
 }
 
@@ -29,7 +33,8 @@ void Node::deleteSelectedNode()
 {
     if (_selected != nullptr) {
         Node *p = _selected;
-        _selected->setNodeSelected(nullptr);
+        _selected->setNodeSelected(false);
+        disconnect(p, 0, 0, 0);
         delete p;
     }
 }
@@ -52,7 +57,7 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 
 void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    setNodeSelected(nullptr);
+    setNodeSelected(false);
     this->setCursor(QCursor(Qt::ClosedHandCursor));
     this->setPos(mapToScene(event->pos()));
 }
@@ -60,13 +65,9 @@ void Node::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (_selected != this)
-        setNodeSelected(this);
+        setNodeSelected();
     else
-        setNodeSelected(nullptr);
-    // Перерисовать все вершины!
-    foreach (Node* node, _map) {
-        node->prepareGeometryChange();
-    }
+        setNodeSelected(false);
 
     Q_UNUSED(event);
 }
