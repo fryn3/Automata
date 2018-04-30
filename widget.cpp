@@ -10,18 +10,7 @@ Widget::Widget(QWidget *parent)
 {
     resize(500, 530);
     QHBoxLayout *mainLayout = new QHBoxLayout(this);
-    QVBoxLayout *leftLayout = new QVBoxLayout();
-    {
-        QHBoxLayout *lay = new QHBoxLayout();
-        QLabel *l = new QLabel("Вариант");
-        QLineEdit *e = new QLineEdit("32");
-        QPushButton *b = new QPushButton("Применить");
-        lay->addWidget(l);
-        lay->addWidget(e);
-        lay->addWidget(b);
-        leftLayout->addLayout(lay);
-    }
-    mainLayout->addLayout(leftLayout);
+
 
     QVBoxLayout *rightLayout = new QVBoxLayout();
     {
@@ -29,10 +18,12 @@ Widget::Widget(QWidget *parent)
         {
             btnCreateNode = new QPushButton("Добавить вершину", this);
             layout->addWidget(btnCreateNode);
-            QPushButton *bSt = new QPushButton("Соединить", this);
-            layout->addWidget(bSt);
-            QPushButton *bDel = new QPushButton("Удалить", this);
-            layout->addWidget(bDel);
+            btnConnectNode = new QPushButton("Соединить", this);
+            btnConnectNode->setEnabled(false);
+            layout->addWidget(btnConnectNode);
+            btnDeleteNode = new QPushButton("Удалить", this);
+            btnDeleteNode->setEnabled(false);
+            layout->addWidget(btnDeleteNode);
         }
         rightLayout->addLayout(layout);
     }
@@ -42,40 +33,8 @@ Widget::Widget(QWidget *parent)
     view->setScene(scene);
     rightLayout->addWidget(view);
     connect(btnCreateNode, SIGNAL(clicked()), SLOT(onBtnCreateNodeClicked()));
-
-    // только дизайн
-    {
-        QGridLayout *layout = new QGridLayout();
-        {
-            QLabel *l = new QLabel("Состояние:");
-            QLineEdit *e = new QLineEdit();
-            layout->addWidget(l, 0, 0);
-            layout->addWidget(e, 0, 1);
-        }
-        {
-            QLabel *l = new QLabel("X", this);
-            QLineEdit *e = new QLineEdit(this);
-            layout->addWidget(l, 1, 0);
-            layout->addWidget(e, 1, 1);
-        }
-        {
-            QLabel *l = new QLabel("Y", this);
-            QLineEdit *e = new QLineEdit(this);
-            layout->addWidget(l, 1, 2);
-            layout->addWidget(e, 1, 3);
-        }
-        {
-            QPushButton *b = new QPushButton("Применить", this);
-            b->setFixedSize(100, 50);
-            layout->addWidget(b, 0, 4, 2, 1);
-        }
-        {
-            QPushButton *b = new QPushButton("Проверить!", this);
-            b->setFixedSize(100,50);
-            layout->addWidget(b, 0, 5, 2, 1);
-        }
-        rightLayout->addLayout(layout);
-    }
+    connect(btnConnectNode, SIGNAL(clicked()), SLOT(onBtnConnectNodeClicked()));
+    connect(btnDeleteNode, SIGNAL(clicked()), SLOT(onBtnDeleteNodeClicked()));
     mainLayout->addLayout(rightLayout);
 }
 
@@ -84,11 +43,35 @@ Widget::~Widget()
 
 }
 
+void Widget::onSceneNodeChanged()
+{
+    if (Node::selectedNode() != nullptr) {
+        btnConnectNode->setEnabled(true);
+        btnDeleteNode->setEnabled(true);
+    } else {
+        btnConnectNode->setEnabled(false);
+        btnDeleteNode->setEnabled(false);
+    }
+}
+
 void Widget::onBtnCreateNodeClicked()
 {
     Node *node = new Node();        // Создаём графический элемент
-    nodes[node->id] = node;
     node->setPos(randomBetween(100, 300),    // Устанавливаем случайную позицию элемента
                  randomBetween(100, 300));
     scene->addItem(node);   // Добавляем элемент на графическую сцену
+
+    connect(node, SIGNAL(selectNodeChanged()), SLOT(onSceneNodeChanged()));
+
 }
+
+void Widget::onBtnConnectNodeClicked()
+{
+
+}
+
+void Widget::onBtnDeleteNodeClicked()
+{
+    Node::deleteSelectedNode();
+}
+

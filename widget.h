@@ -18,15 +18,19 @@ class Widget : public QWidget
     Q_OBJECT
 private:
     QPushButton *btnCreateNode;
+    QPushButton *btnConnectNode;
+    QPushButton *btnDeleteNode;
     QGraphicsView *view;
     QGraphicsScene *scene;
-    QMap<uint, Node *> nodes;
 
 public:
     Widget(QWidget *parent = 0);
     ~Widget();
 private slots:
+    void onSceneNodeChanged();
     void onBtnCreateNodeClicked();
+    void onBtnConnectNodeClicked();
+    void onBtnDeleteNodeClicked();
 };
 
 #endif // WIDGET_H

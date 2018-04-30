@@ -7,6 +7,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QDebug>
 #include <QCursor>
+#include <QMap>
 
 class Node : public QGraphicsObject
 {
@@ -15,17 +16,24 @@ public:
     explicit Node(QGraphicsItem *parent = 0);
     const uint id;
     ~Node();
-signals:
+    static const Node* selectedNode();
+    static void deleteSelectedNode();
+public slots:
 
+signals:
+    void selectNodeChanged();
 private:
     static uint idStatic;
-    bool _selected;
+    static Node* _selected;
+    static QMap<uint, Node*> _map;
+    void setNodeSelected(Node * n);
+
+
     QRectF boundingRect() const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-public slots:
 
 };
 
