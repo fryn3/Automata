@@ -10,8 +10,11 @@
 #include <QMap>
 #include <QLabel>
 #include <QLineEdit>
-
+#include <QMap>
 #include "node.h"
+#include "graphicslineitem.h"
+
+
 
 class Widget : public QWidget
 {
@@ -24,6 +27,7 @@ private:
     QGraphicsScene *scene;
     bool _connectNode;
     Node *_source, *_destination;
+    void printArrow(QLineF lineF);
 public:
     Widget(QWidget *parent = 0);
     ~Widget();

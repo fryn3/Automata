@@ -26,8 +26,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         widget.cpp \
-    node.cpp
+    node.cpp \
+    graphicslineitem.cpp
 
 HEADERS += \
         widget.h \
-    node.h
+    node.h \
+    graphicslineitem.h

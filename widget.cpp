@@ -44,6 +44,32 @@ Widget::~Widget()
 
 }
 
+void Widget::printArrow(QLineF lineF)
+{
+    GraphicsLineItem *line = new GraphicsLineItem();
+    QLineF ll1; // /\ острая часть стрелы
+    QLineF ll2; // /\ острая часть стрелы
+
+    qreal x, y, angl, len = 20, r = 30;
+    x = lineF.p2().x() - r * cos(lineF.angle() * 3.14159265 / 180);
+    y = lineF.p2().y() + r * sin(lineF.angle() * 3.14159265 / 180);
+    angl = lineF.angle();
+    ll1.setLine(x, y,
+                x - len * cos((angl - 10) * 3.14159265 / 180),
+                y + len * sin((angl - 10) * 3.14159265 / 180));
+    ll2.setLine(x, y,
+                x - len * cos((angl + 10) * 3.14159265 / 180),
+                y + len * sin((angl + 10) * 3.14159265 / 180));
+    QGraphicsLineItem *l1 = new QGraphicsLineItem(ll1);
+    QGraphicsLineItem *l2 = new QGraphicsLineItem(ll2);
+    l1->setPen(QPen(Qt::black, 3, Qt::SolidLine));
+    l2->setPen(QPen(Qt::black, 3, Qt::SolidLine));
+    line->setLine(lineF);
+    scene->addItem(line);
+    scene->addItem(l1);
+    scene->addItem(l2);
+}
+
 void Widget::onSceneNodeChanged()
 {
     if (_connectNode) {
@@ -53,12 +79,8 @@ void Widget::onSceneNodeChanged()
         QLineF lineBetweenItems;
         lineBetweenItems.setP1(_source->scenePos());
         lineBetweenItems.setP2(_destination->scenePos());
-        // добавляем линию на сцену
-        QGraphicsLineItem * l = scene->addLine(lineBetweenItems);
-        l->setPen(QPen(Qt::black, 3, Qt::SolidLine));
-//        l->setFlags(QGraphicsItem::ItemIsSelectable);
-
-
+        // добавляем стрелку на сцену
+        printArrow(lineBetweenItems);
         _connectNode = false;
         Node::selectedNode()->setNodeSelected(false);
     }
