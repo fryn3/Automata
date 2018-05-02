@@ -12,8 +12,8 @@
 #include <QLineEdit>
 #include <QMap>
 #include "node.h"
-#include "graphicslineitem.h"
-
+#include "arrow.h"
+#include "scene.h"
 
 
 class Widget : public QWidget
@@ -24,7 +24,7 @@ private:
     QPushButton *btnConnectNode;
     QPushButton *btnDeleteNode;
     QGraphicsView *view;
-    QGraphicsScene *scene;
+    Scene *scene;
     bool _connectNode;
     Node *_source, *_destination;
     void printArrow(QLineF lineF);
@@ -36,6 +36,7 @@ private slots:
     void onBtnCreateNodeClicked();
     void onBtnConnectNodeClicked();
     void onBtnDeleteNodeClicked();
+    void sceneSelectionChanged();
 };
 
 #endif // WIDGET_H
