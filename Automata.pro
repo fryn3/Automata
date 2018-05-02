@@ -27,9 +27,13 @@ SOURCES += \
         main.cpp \
         widget.cpp \
     node.cpp \
-    graphicslineitem.cpp
+    customlineitem.cpp \
+    scene.cpp \
+    arrowitemgroup.cpp
 
 HEADERS += \
         widget.h \
     node.h \
-    graphicslineitem.h
+    customlineitem.h \
+    scene.h \
+    arrowitemgroup.h

@@ -12,7 +12,7 @@
 #include <QLineEdit>
 #include <QMap>
 #include "node.h"
-#include "arrow.h"
+#include "arrowitemgroup.h"
 #include "scene.h"
 
 
