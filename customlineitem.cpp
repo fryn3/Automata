@@ -1,10 +1,10 @@
 #include "customlineitem.h"
 
+const qreal CustomLineItem::selectionOffset = 5;
+
 CustomLineItem::CustomLineItem(QLineF line, QGraphicsItem *parent):
-    QGraphicsLineItem(line, parent), selectionOffset(20)
+    QGraphicsLineItem(line, parent)
 {
-    setFlags(QGraphicsItem::ItemIsSelectable
-             |QGraphicsItem::ItemIsMovable);
     createSelectionPolygon();
 }
 
@@ -37,10 +37,12 @@ void CustomLineItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
                            QWidget *widget){
     Q_UNUSED(option);
     Q_UNUSED(widget);
-    painter->setPen(pen());
-    painter->drawLine(line());
-    if (isSelected()) {
-        painter->setPen(QPen(Qt::black, 2, Qt::DashLine));
-        painter->drawPolygon(selectionPolygon);
+    if(isSelected()) {
+        QPen pen = QPen(Qt::cyan, 3, Qt::SolidLine);
+        painter->setPen(pen);
+        painter->drawLine(line());
+    } else {
+        painter->setPen(pen());
+        painter->drawLine(line());
     }
 }

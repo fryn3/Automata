@@ -16,8 +16,8 @@ public:
     QPainterPath shape() const;
     void paint (QPainter* painter, const QStyleOptionGraphicsItem* option,
                 QWidget* widget = 0);
+    static const qreal selectionOffset;
 private:
-    const qreal selectionOffset;
     QPolygonF selectionPolygon;
     void createSelectionPolygon();
 };
